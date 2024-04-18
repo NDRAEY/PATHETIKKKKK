@@ -6,7 +6,19 @@
         xmlns:local="clr-namespace:PATHETIKKKKK.View"
         mc:Ignorable="d"
         Title="Сотрудники" Height="450" Width="800">
-    <Grid>
-        
-    </Grid>
+    <StackPanel>
+        <ListView x:Name="lvEmployee">
+            <ListView.View>
+                <GridView>
+                    <GridView.Columns>
+                        <GridViewColumn DisplayMemberBinding="{Binding Id}" Header="Код" Width="50" />
+                        <GridViewColumn DisplayMemberBinding="{Binding LastName}" Header="Фамилия" />
+                        <GridViewColumn DisplayMemberBinding="{Binding FirstName}" Header="Имя" />
+                        <GridViewColumn DisplayMemberBinding="{Binding RoleId}" Header="Должность" />
+                        <GridViewColumn DisplayMemberBinding="{Binding Birthday}" Header="Дата рождения" />
+                    </GridView.Columns>
+                </GridView>
+            </ListView.View>
+        </ListView>
+    </StackPanel>
 </Window>

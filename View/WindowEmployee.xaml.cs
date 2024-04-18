@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PATHETIKKKKK.ViewModel;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,6 +23,9 @@ namespace PATHETIKKKKK.View
         public WindowEmployee()
         {
             InitializeComponent();
+
+            PersonViewModel vmPerson = new PersonViewModel();
+            lvEmployee.ItemsSource = vmPerson.ListPerson;
         }
     }
 }
