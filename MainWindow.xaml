@@ -6,7 +6,10 @@
         xmlns:local="clr-namespace:PATHETIKKKKK"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
-    <Grid>
-        
-    </Grid>
+    <StackPanel>
+        <Menu>
+            <MenuItem x:Name="Employee" Header="Сотрудники" Click="Employee_Click"/>
+            <MenuItem x:Name="Role" Header="Должности" Click="Role_Click"/>
+        </Menu>
+    </StackPanel>
 </Window>
