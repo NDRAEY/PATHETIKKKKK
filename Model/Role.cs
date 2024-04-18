@@ -16,5 +16,10 @@ namespace PATHETIKKKKK.Model
             this.Id = id;
             this.NameRole = nameRole;
         }
+
+        public Role ShallowCopy()
+        {
+            return (Role)this.MemberwiseClone();
+        }
     }
 }

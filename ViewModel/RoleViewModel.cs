@@ -11,6 +11,7 @@ namespace PATHETIKKKKK.ViewModel
     internal class RoleViewModel
     {
         public ObservableCollection<Role> ListRole { get; set; } = new ObservableCollection<Role>();
+        public static int IdRole { get; set; }
         public RoleViewModel()
         {
             this.ListRole.Add(new Role
@@ -30,5 +31,17 @@ namespace PATHETIKKKKK.ViewModel
             });
         }
 
+        public int MaxId()
+        {
+            int max = 0;
+            foreach (var r in this.ListRole)
+            {
+                if (max < r.Id)
+                {
+                    max = r.Id;
+                };
+            }
+            return max;
+        }
     }
 }
