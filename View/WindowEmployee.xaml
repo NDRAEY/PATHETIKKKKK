@@ -14,8 +14,8 @@
                         <GridViewColumn DisplayMemberBinding="{Binding Id}" Header="Код" Width="50" />
                         <GridViewColumn DisplayMemberBinding="{Binding LastName}" Header="Фамилия" />
                         <GridViewColumn DisplayMemberBinding="{Binding FirstName}" Header="Имя" />
-                        <GridViewColumn DisplayMemberBinding="{Binding RoleId}" Header="Должность" />
-                        <GridViewColumn DisplayMemberBinding="{Binding Birthday}" Header="Дата рождения" />
+                        <GridViewColumn DisplayMemberBinding="{Binding Role}" Header="Должность" />
+                        <GridViewColumn DisplayMemberBinding="{Binding Birthday, StringFormat={}{0:dd\.}{0:MM\.}{0:yyyy}}" Header="Дата рождения"/>
                     </GridView.Columns>
                 </GridView>
             </ListView.View>
