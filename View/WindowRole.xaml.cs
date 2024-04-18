@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PATHETIKKKKK.ViewModel;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,6 +23,9 @@ namespace PATHETIKKKKK.View
         public WindowRole()
         {
             InitializeComponent();
+
+            RoleViewModel vmRole = new RoleViewModel();
+            lvRole.ItemsSource = vmRole.ListRole;
         }
     }
 }
