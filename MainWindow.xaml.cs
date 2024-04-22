@@ -1,4 +1,5 @@
 ﻿using PATHETIKKKKK.View;
+using PATHETIKKKKK.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,6 +22,9 @@ namespace PATHETIKKKKK
     /// </summary>
     public partial class MainWindow : Window
     {
+        public static int IdRole { get; set; }
+        public static int IdEmployee { get; set; }
+
         public MainWindow()
         {
             InitializeComponent();
