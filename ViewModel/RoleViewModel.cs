@@ -1,10 +1,12 @@
-﻿using PATHETIKKKKK.Helper;
+﻿using Newtonsoft.Json;
+using PATHETIKKKKK.Helper;
 using PATHETIKKKKK.Model;
 using PATHETIKKKKK.View;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -15,6 +17,17 @@ namespace PATHETIKKKKK.ViewModel
 {
     public class RoleViewModel : INotifyPropertyChanged
     {
+        readonly string fld = System.Environment.GetEnvironmentVariable("USERPROFILE");
+        readonly string path;
+        
+        string _jsonRoles = String.Empty;
+        public string Error
+        {
+            get; set;
+        }
+
+        public ObservableCollection<Role> ListRole { get; set; } = new ObservableCollection<Role>();
+
         /// <summary>
         /// выбранная в списке должность
         /// </summary>
@@ -38,10 +51,10 @@ namespace PATHETIKKKKK.ViewModel
         /// <summary>
         /// коллекция должностей сотрудников
         /// </summary>
-        public ObservableCollection<Role> ListRole { get; set; } = new
-       ObservableCollection<Role>();
         public RoleViewModel()
         {
+            path = $@"{fld}\RoleData.json";
+
             this.ListRole.Add(new Role
             {
                 Id = 1,
@@ -147,6 +160,35 @@ namespace PATHETIKKKKK.ViewModel
             }
         }
 
+        public ObservableCollection<Role> LoadRole()
+        {
+            _jsonRoles = File.ReadAllText(path);
+            if (_jsonRoles != null)
+            {
+                ListRole = JsonConvert.DeserializeObject <ObservableCollection<Role>> (_jsonRoles);
+                return ListRole;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        private void SaveChanges(ObservableCollection<Role> listRole)
+        {
+            var jsonRole = JsonConvert.SerializeObject(listRole);
+            try
+            {
+                using (StreamWriter writer = File.CreateText(path))
+                {
+                    writer.Write(jsonRole);
+                }
+            }
+            catch (IOException e)
+            {
+                Error = "Ошибка записи json файла \n" + e.Message;
+            }
+        }
     }
 
 }

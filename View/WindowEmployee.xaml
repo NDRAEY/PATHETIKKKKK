@@ -8,18 +8,18 @@
         Title="Сотрудники" Height="450" Width="800">
     <StackPanel>
         <StackPanel Orientation="Horizontal" Background="#FFE4E0E0">
-            <Button x:Name="btnAdd" Margin="10,10,5,10" Content="Добавить" Height="25" Click="btnAdd_Click"/>
-            <Button x:Name="btnEdit" Margin="10,10,5,10" Content="Редактировать" Height="25" Click="btnEdit_Click"/>
-            <Button x:Name="btnDelete" Margin="10,10,5,10" Content="Удалить" Height="25" Click="btnDelete_Click"/>
+            <Button Content="Добавить" Height="25" Margin="10,10,5,10" Command="{Binding AddPerson}"/>
+            <Button Margin="10,10,5,10" Content="Редактировать" Height="25" Command="{Binding EditPerson}"/>
+            <Button Content="Удалить" Height="25" Margin="10,10,5,10" Command="{Binding DeletePerson}"/>
         </StackPanel>
-        <ListView x:Name="lvEmployee">
+        <ListView x:Name="lvEmployee" ItemsSource="{Binding ListPerson}">
             <ListView.View>
                 <GridView>
                     <GridView.Columns>
                         <GridViewColumn DisplayMemberBinding="{Binding Id}" Header="Код" Width="50" />
                         <GridViewColumn DisplayMemberBinding="{Binding LastName}" Header="Фамилия" />
                         <GridViewColumn DisplayMemberBinding="{Binding FirstName}" Header="Имя" />
-                        <GridViewColumn DisplayMemberBinding="{Binding Role}" Header="Должность" />
+                        <GridViewColumn DisplayMemberBinding="{Binding RoleName}" Header="Должность" />
                         <GridViewColumn DisplayMemberBinding="{Binding Birthday, StringFormat={}{0:dd\.}{0:MM\.}{0:yyyy}}" Header="Дата рождения"/>
                     </GridView.Columns>
                 </GridView>

@@ -1,5 +1,9 @@
-﻿using System;
+﻿using PATHETIKKKKK.Helper;
+using PATHETIKKKKK.Model;
+using PATHETIKKKKK.ViewModel;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -22,11 +26,26 @@ namespace PATHETIKKKKK.View
         public WindowNewEmployee()
         {
             InitializeComponent();
+
+            CbRole.ItemsSource = new RoleViewModel().ListRole;
         }
 
         private void BtSave_Click(object sender, RoutedEventArgs e)
         {
             DialogResult = true;
         }
+
+        private void tbBirthday_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (tbBirthday.Visibility == Visibility.Hidden)
+            {
+                ClBirthday.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                ClBirthday.Visibility = Visibility.Hidden;
+            }
+        }
+
     }
 }

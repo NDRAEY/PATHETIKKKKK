@@ -27,9 +27,9 @@ namespace PATHETIKKKKK.Model
             this.Birthday = birthday;
         }
 
-        public static PersonDPO CopyFromPerson(Person person)
+        public static PersonDpo CopyFromPerson(Person person)
         {
-            PersonDPO perDPO = new PersonDPO();
+            PersonDpo perDpo = new PersonDpo();
             RoleViewModel vmRole = new RoleViewModel();
             string role = string.Empty;
             foreach (var r in vmRole.ListRole)
@@ -42,17 +42,17 @@ namespace PATHETIKKKKK.Model
             }
             if (role != string.Empty)
             {
-                perDPO.Id = person.Id;
-                perDPO.RoleName = role;
-                perDPO.FirstName = person.FirstName;
-                perDPO.LastName = person.LastName;
-                perDPO.Birthday = person.Birthday;
+                perDpo.Id = person.Id;
+                perDpo.RoleName = role;
+                perDpo.FirstName = person.FirstName;
+                perDpo.LastName = person.LastName;
+                perDpo.Birthday = person.Birthday;
             }
-            return perDPO;
+            return perDpo;
         }
 
 
-        public Person CopyFromPersonDPO(PersonDPO p)
+        public Person CopyFromPersonDpo(PersonDpo p)
         {
             RoleViewModel vmRole = new RoleViewModel();
             int roleId = 0;

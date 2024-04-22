@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace PATHETIKKKKK.Helper
 {
-    public class PersonDPO : INotifyPropertyChanged
+    public class PersonDpo : INotifyPropertyChanged
     {
         /// <summary>
         /// код сотрудника
@@ -36,10 +36,10 @@ namespace PATHETIKKKKK.Helper
         /// имя сотрудника
         /// </summary>
         private string firstName;
-        /// <summary>
-        /// имя сотрудника
-        /// </summary>
-        public string FirstName
+         /// <summary>
+         /// имя сотрудника
+         /// </summary>
+         public string FirstName
         {
             get { return firstName; }
             set
@@ -80,8 +80,8 @@ namespace PATHETIKKKKK.Helper
                 OnPropertyChanged("Birthday");
             }
         }
-        public PersonDPO() { }
-        public PersonDPO(int id, string roleName, string firstName, string lastName, DateTime birthday)
+        public PersonDpo() { }
+        public PersonDpo(int id, string roleName, string firstName, string lastName, DateTime birthday)
         {
             this.Id = id;
             this.RoleName = roleName;
@@ -90,21 +90,22 @@ namespace PATHETIKKKKK.Helper
             this.Birthday = birthday;
         }
          /// <summary>
+
          /// Метод поверхностного копирования 
          /// </summary>
          /// <returns></returns>
-         public PersonDPO ShallowCopy()
+         public PersonDpo ShallowCopy()
         {
-            return (PersonDPO)this.MemberwiseClone();
+            return (PersonDpo)this.MemberwiseClone();
         }
         /// <summary>
         /// копирование данных из класса Person
         /// </summary>
         /// <param name="person"></param>
         /// <returns></returns>
-        public PersonDPO CopyFromPerson(Person person)
+        public PersonDpo CopyFromPerson(Person person)
         {
-            PersonDPO perDPO = new PersonDPO();
+            PersonDpo perDpo = new PersonDpo();
             RoleViewModel vmRole = new RoleViewModel();
             string role = string.Empty;
             foreach (var r in vmRole.ListRole)
@@ -117,13 +118,13 @@ namespace PATHETIKKKKK.Helper
             }
             if (role != string.Empty)
             {
-                perDPO.Id = person.Id;
-                perDPO.RoleName = role;
-                perDPO.FirstName = person.FirstName;
-                perDPO.LastName = person.LastName;
-                perDPO.Birthday = person.Birthday;
+                perDpo.Id = person.Id;
+                perDpo.RoleName = role;
+                perDpo.FirstName = person.FirstName;
+                perDpo.LastName = person.LastName;
+                perDpo.Birthday = person.Birthday;
             }
-            return perDPO;
+            return perDpo;
         }
         public event PropertyChangedEventHandler PropertyChanged;
         //[NotifyPropertyChangedInvocator]
