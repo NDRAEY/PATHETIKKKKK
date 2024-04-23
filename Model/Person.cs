@@ -46,7 +46,7 @@ namespace PATHETIKKKKK.Model
                 perDpo.RoleName = role;
                 perDpo.FirstName = person.FirstName;
                 perDpo.LastName = person.LastName;
-                perDpo.Birthday = person.Birthday;
+                perDpo.Birthday = person.Birthday.ToString();
             }
             return perDpo;
         }
@@ -70,7 +70,7 @@ namespace PATHETIKKKKK.Model
                 this.RoleId = roleId;
                 this.FirstName = p.FirstName;
                 this.LastName = p.LastName;
-                this.Birthday = p.Birthday;
+                this.Birthday = DateTime.Parse(p.Birthday);
             }
             return this;
         }

@@ -28,6 +28,7 @@ namespace PATHETIKKKKK.View
             InitializeComponent();
 
             CbRole.ItemsSource = new RoleViewModel().ListRole;
+
         }
 
         private void BtSave_Click(object sender, RoutedEventArgs e)

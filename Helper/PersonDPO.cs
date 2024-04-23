@@ -67,11 +67,11 @@ namespace PATHETIKKKKK.Helper
         /// <summary>
         /// дата рождения сотрудника
         /// </summary>
-        private DateTime birthday;
+        private string birthday;
         /// <summary>
         /// дата рождения сотрудника
         /// </summary>
-        public DateTime Birthday
+        public string Birthday
         {
             get { return birthday; }
             set
@@ -87,7 +87,7 @@ namespace PATHETIKKKKK.Helper
             this.RoleName = roleName;
             this.FirstName = firstName;
             this.LastName = lastName;
-            this.Birthday = birthday;
+            this.Birthday = birthday.ToString();
         }
          /// <summary>
 
@@ -122,7 +122,7 @@ namespace PATHETIKKKKK.Helper
                 perDpo.RoleName = role;
                 perDpo.FirstName = person.FirstName;
                 perDpo.LastName = person.LastName;
-                perDpo.Birthday = person.Birthday;
+                perDpo.Birthday = person.Birthday.ToString();
             }
             return perDpo;
         }
@@ -131,6 +131,12 @@ namespace PATHETIKKKKK.Helper
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        internal static string GetStringBirthday(string birthday)
+        {
+            // WHAT???
+            return birthday;
         }
     }
 }

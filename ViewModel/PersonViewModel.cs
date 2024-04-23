@@ -19,77 +19,215 @@ namespace PATHETIKKKKK.ViewModel
     public class PersonViewModel : INotifyPropertyChanged
     {
         readonly string fld = System.Environment.GetEnvironmentVariable("USERPROFILE");
-        readonly string path;
+        string path;
 
-        string _jsonPersons = String.Empty;
-        public string Error { get; set; }
+        private PersonDpo _selectedPersonDpo;
 
-        private PersonDpo selectedPersonDpo;
-        /// <summary>
-        /// выделенные в списке данные по сотруднику 
-        /// </summary>
         public PersonDpo SelectedPersonDpo
         {
-            get { return selectedPersonDpo; }
+            get { return _selectedPersonDpo; }
             set
             {
-                selectedPersonDpo = value;
+                _selectedPersonDpo = value;
                 OnPropertyChanged("SelectedPersonDpo");
             }
         }
         /// <summary>
         /// коллекция данных по сотрудникам
         /// </summary>
-        public ObservableCollection<Person> ListPerson { get; set; } = new ObservableCollection<Person>();
+        public ObservableCollection<Person> ListPerson { get; set; }
         public ObservableCollection<PersonDpo> ListPersonDpo
         {
             get;
             set;
-        } = new ObservableCollection<PersonDpo>();
-
+        }
+        string _jsonPersons = String.Empty;
+        public string Error { get; set; }
+        public string Message { get; set; }
         public PersonViewModel()
         {
-            path = $@"{fld}\Person.json";
+            path = $@"{fld}\Persons.json";
 
-            this.ListPerson.Add(
-            new Person
-            {
-                Id = 1,
-                RoleId = 1,
-                FirstName = "Иван",
-                LastName = "Иванов",
-                Birthday = new DateTime(1980, 02, 28)
-            });
-            this.ListPerson.Add(
-            new Person
-            {
-                Id = 2,
-                RoleId = 2,
-                FirstName = "Петр",
-                LastName = "Петров",
-                Birthday = new DateTime(1981, 03, 20)
-            });
-            this.ListPerson.Add(
-            new Person
-            {
-                Id = 3,
-                RoleId = 3,
-                FirstName = "Виктор",
-                LastName = "Викторов",
-                Birthday = new DateTime(1982, 04, 15)
-            });
-            this.ListPerson.Add(
-            new Person
-            {
-                Id = 4,
-                RoleId = 3,
-                FirstName = "Сидор",
-                LastName = "Сидоров",
-                Birthday = new DateTime(1983, 05, 10)
-            });
+            ListPerson = new ObservableCollection<Person>();
+            ListPersonDpo = new ObservableCollection<PersonDpo>();
+            ListPerson = LoadPerson();
             ListPersonDpo = GetListPersonDpo();
-        }
 
+        }
+        #region AddPerson
+        /// <summary>
+        /// добавление сотрудника
+        /// </summary>
+         private RelayCommand _addPerson;
+        /// <summary>
+        /// добавление сотрудника
+        /// </summary>
+        public RelayCommand AddPerson
+        {
+            get
+            {
+                return _addPerson ??
+                (_addPerson = new RelayCommand(obj =>
+                {
+                    WindowNewEmployee wnPerson = new WindowNewEmployee
+                    {
+                        Title = "Новый сотрудник"
+                    };
+                    // формирование кода нового собрудника
+                    int maxIdPerson = MaxId() + 1;
+                    PersonDpo per = new PersonDpo
+                    {
+                        Id = maxIdPerson,
+                        Birthday = DateTime.Now.ToString(),
+                    };
+
+                    wnPerson.DataContext = per;
+                    if (wnPerson.ShowDialog() == true)
+                    {
+                        var r = (Role)wnPerson.CbRole.SelectedValue;
+                        if (r != null)
+                        {
+                            per.RoleName = r.NameRole;
+
+                            per.Birthday = PersonDpo.GetStringBirthday(per.Birthday);
+                            ListPersonDpo.Add(per);
+                            // добавление нового сотрудника в коллекцию ListRoles<Person>
+                            Person p = new Person();
+                            p = p.CopyFromPersonDpo(per);
+                            ListPerson.Add(p);
+                            try
+                            {
+                                // сохранение изменений в файле json
+                                SaveChanges(ListPerson);
+                            }
+                            catch (Exception e)
+                            {
+                                Error = "Ошибка добавления данных в json файл\n" + e.Message;
+                            }
+                        }
+                    }
+                },
+                (obj) => true));
+            }
+        }
+        #endregion
+        #region EditPerson
+        /// команда редактирования данных по сотруднику
+        private RelayCommand _editPerson;
+        public RelayCommand EditPerson
+        {
+            get
+            {
+                return _editPerson ??
+                (_editPerson = new RelayCommand(obj =>
+                {
+                    WindowNewEmployee wnPerson = new WindowNewEmployee()
+                    {
+                        Title = "Редактирование данных сотрудника",
+                    };
+                    PersonDpo personDpo = SelectedPersonDpo;
+                    var tempPerson = personDpo.ShallowCopy();
+                    wnPerson.DataContext = tempPerson;
+
+                    if (wnPerson.ShowDialog() == true)
+                    {
+                        // сохранение данных в оперативной памяти
+                        // перенос данных из временного класса в класс отображения данных 
+                        var r = (Role)wnPerson.CbRole.SelectedValue;
+                        if (r != null)
+                        {
+                            personDpo.RoleName = r.NameRole;
+                            personDpo.FirstName = tempPerson.FirstName;
+                            personDpo.LastName = tempPerson.LastName;
+                            personDpo.Birthday = PersonDpo.GetStringBirthday(tempPerson.Birthday);
+                            // перенос данных из класса отображения данных в класс Person
+        
+                            var per = ListPerson.FirstOrDefault(p => p.Id == personDpo.Id);
+                            if (per != null)
+                            {
+                                per = per.CopyFromPersonDpo(personDpo);
+                            }
+                            try
+                            {
+                                // сохраненее данных в файле json
+                                SaveChanges(ListPerson);
+                            }
+                            catch (Exception e)
+                            {
+                                Error = "Ошибка редактирования данных в json файл\n" + e.Message;
+                            }
+                        }
+                        else
+                        {
+                            Message = "Необходимо выбрать должность сотрудника.";
+                        }
+                    }
+                }, (obj) => SelectedPersonDpo != null && ListPersonDpo.Count > 0));
+            }
+        }
+        #endregion
+        #region DeletePerson
+        /// команда удаления данных по сотруднику
+        private RelayCommand _deletePerson;
+        public RelayCommand DeletePerson
+        {
+            get
+            {
+                return _deletePerson ??
+                (_deletePerson = new RelayCommand(obj =>
+                {
+                    PersonDpo person = SelectedPersonDpo;
+                    MessageBoxResult result = MessageBox.Show("Удалить данные по сотруднику: \n" + person.LastName + " " + person.FirstName, "Предупреждение", MessageBoxButton.OKCancel, MessageBoxImage.Warning);
+                    if (result == MessageBoxResult.OK)
+                    {
+                        try
+                        {
+                            // удаление данных в списке отображения данных
+                            ListPersonDpo.Remove(person);
+                            // поиск удаляемого класса в коллекции ListRoles
+                            var per = ListPerson.FirstOrDefault(p => p.Id == person.Id);
+                            if (per != null)
+                            {
+                                ListPerson.Remove(per);
+                                // сохраненее данных в файле json
+                                SaveChanges(ListPerson);
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            Error = "Ошибка удаления данных\n" + e.Message;
+                        }
+                    } 
+                }, (obj) => SelectedPersonDpo != null && ListPersonDpo.Count > 0));
+            }
+        }
+        #endregion
+        #region Method
+        /// <summary>
+        /// Загрузка данных по сотрудникам из json файла
+        /// </summary>
+        /// <returns></returns>
+        public ObservableCollection<Person> LoadPerson()
+        {
+            if(!File.Exists(path))
+            {
+                File.WriteAllText(path, "[]");
+            }
+            _jsonPersons = File.ReadAllText(path);
+            if (_jsonPersons != null)
+            {
+                ListPerson = JsonConvert.DeserializeObject<ObservableCollection<Person>>(_jsonPersons);
+                return ListPerson;
+            }
+            else
+            {
+                return null;
+            }
+        }
+        /// <summary>
+        /// Формирование коллекции классов PersonDpo из коллекции Person
+        /// </summary>
+        /// <returns></returns>
         public ObservableCollection<PersonDpo> GetListPersonDpo()
         {
             foreach (var person in ListPerson)
@@ -116,142 +254,12 @@ namespace PATHETIKKKKK.ViewModel
             }
             return max;
         }
-        #region AddPerson
         /// <summary>
-        /// добавление сотрудника
-        /// </summary>
-        private RelayCommand addPerson;
-        /// <summary>
-        /// добавление сотрудника
-        /// </summary>
-        public RelayCommand AddPerson
-        {
-            get
+        /// Сохранение json-строки с данными по сотрудникам в json файл
+         /// </summary>
+         /// <param name="listPersons"></param>
+         private void SaveChanges(ObservableCollection<Person> listPersons)
             {
-                return addPerson ??
-                (addPerson = new RelayCommand(obj =>
-                {
-                    WindowNewEmployee wnPerson = new WindowNewEmployee
-                    {
-                        Title = "Новый сотрудник"
-                    };
-
-                    //wnPerson.CbRole.ItemsSource = new RoleViewModel().ListRole;
-                    // формирование кода нового сотрудника
-                    int maxIdPerson = MaxId() + 1;
-                    PersonDpo per = new PersonDpo
-                    {
-                        Id = maxIdPerson,
-                        Birthday = DateTime.Now
-                    };
-                    wnPerson.DataContext = per;
-                    if (wnPerson.ShowDialog() == true)
-                    {
-                        MessageBox.Show("AHAHAH!");
-                        
-                        Role r = (Role)wnPerson.CbRole.SelectedValue;
-                        per.RoleName = r.NameRole;
-                        ListPersonDpo.Add(per);
-                        // добавление нового сотрудника в коллекцию ListPerson<Person>
-
-                        Person p = new Person();
-                        p = p.CopyFromPersonDpo(per);
-                        ListPerson.Add(p);
-                    }
-                },
-                (obj) => true));
-            }
-        }
-        #endregion
-        #region EditPerson
-        /// команда редактирования данных по сотруднику
-        private RelayCommand editPerson;
-        public RelayCommand EditPerson
-        {
-            get
-            {
-                return editPerson ??
-                (editPerson = new RelayCommand(obj =>
-                {
-                    WindowNewEmployee wnPerson = new WindowNewEmployee
-                    {
-                        Title = "Редактирование данных сотрудника",
-                    };
-                    PersonDpo personDpo = SelectedPersonDpo;
-                    PersonDpo tempPerson = new PersonDpo();
-                    tempPerson = personDpo.ShallowCopy();
-                    wnPerson.DataContext = tempPerson;
-
-                    //wnPerson.CbRole.ItemsSource = new ListRole();
-                    if (wnPerson.ShowDialog() == true)
-                    {
-                        // сохранение данных в оперативной памяти
-                        // перенос данных из временного класса в класс отображения 
-                        // данных 
-                        Role r = (Role)wnPerson.CbRole.SelectedValue;
-                        personDpo.RoleName = r.NameRole;
-                        personDpo.FirstName = tempPerson.FirstName;
-                        personDpo.LastName = tempPerson.LastName;
-                        personDpo.Birthday = tempPerson.Birthday;
-                        // перенос данных из класса отображения данных в класс Person
-                        FindPerson finder = new FindPerson(personDpo.Id);
-
-                        List<Person> listPerson = ListPerson.ToList();
-                        Person p = listPerson.Find(new Predicate<Person>(finder.PersonPredicate));
-                        p = p.CopyFromPersonDpo(personDpo);
-                    }
-                }, (obj) => SelectedPersonDpo != null && ListPersonDpo.Count > 0));
-            }
-        }
-        #endregion
-        #region DeletePerson
-        /// команда удаления данных по сотруднику
-        private RelayCommand deletePerson;
-        public RelayCommand DeletePerson
-        {
-            get
-            {
-                return deletePerson ??
-                (deletePerson = new RelayCommand(obj =>
-                {
-                    PersonDpo person = SelectedPersonDpo;
-                    MessageBoxResult result = MessageBox.Show("Удалить данные по сотруднику: \n" + person.LastName + " " + person.FirstName, "Предупреждение", MessageBoxButton.OKCancel, MessageBoxImage.Warning);
-                    if (result == MessageBoxResult.OK)
-                    {
-                        // удаление данных в списке отображения данных
-                        ListPersonDpo.Remove(person);
-                        // удаление данных в списке классов ListPerson<Person>
-                        Person per = new Person();
-                        per = per.CopyFromPersonDpo(person);
-                        ListPerson.Remove(per);
-                    }
-                }, (obj) => SelectedPersonDpo != null && ListPersonDpo.Count > 0));
-            }
-        }
-        #endregion
-        public event PropertyChangedEventHandler PropertyChanged;
-        //[NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        public ObservableCollection<Person> LoadPerson()
-        {
-            _jsonPersons = File.ReadAllText(path);
-            if (_jsonPersons != null)
-            {
-                ListPerson = JsonConvert.DeserializeObject<ObservableCollection<Person>>(_jsonPersons);
-                return ListPerson;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        private void SaveChanges(ObservableCollection<Person> listPersons)
-        {
             var jsonPerson = JsonConvert.SerializeObject(listPersons);
             try
             {
@@ -264,6 +272,14 @@ namespace PATHETIKKKKK.ViewModel
             {
                 Error = "Ошибка записи json файла /n" + e.Message;
             }
+        }
+        #endregion
+        public event PropertyChangedEventHandler PropertyChanged;
+        //[NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged([CallerMemberName]
+string propertyName = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
     }
