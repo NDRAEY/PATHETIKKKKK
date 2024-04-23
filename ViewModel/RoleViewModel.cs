@@ -21,6 +21,11 @@ namespace PATHETIKKKKK.ViewModel
         readonly string path;
         
         string _jsonRoles = String.Empty;
+        public RoleViewModel()
+        {
+            path = $@"{fld}\RoleData.json";
+            ListRole = LoadRole();
+        }
         public string Error
         {
             get; set;
@@ -48,29 +53,7 @@ namespace PATHETIKKKKK.ViewModel
                 EditRole.CanExecute(true);
             }
         }
-        /// <summary>
-        /// коллекция должностей сотрудников
-        /// </summary>
-        public RoleViewModel()
-        {
-            path = $@"{fld}\RoleData.json";
-
-            this.ListRole.Add(new Role
-            {
-                Id = 1,
-                NameRole = "Директор"
-            });
-            this.ListRole.Add(new Role
-            {
-                Id = 2,
-                NameRole = "Бухгалтер"
-            });
-            this.ListRole.Add(new Role
-            {
-                Id = 3,
-                NameRole = "Менеджер"
-            });
-        }
+        
         /// <summary>
         /// Нахождение максимального Id в коллекции
         /// </summary>
@@ -93,13 +76,13 @@ namespace PATHETIKKKKK.ViewModel
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        private RelayCommand addRole;
+        private RelayCommand _addRole;
         public RelayCommand AddRole
         {
             get
             {
-                return addRole ??
-                (addRole = new RelayCommand(obj =>
+                return _addRole ??
+                (_addRole = new RelayCommand(obj =>
                 {
                     WindowNewRole wnRole = new WindowNewRole
                     {
@@ -112,60 +95,68 @@ namespace PATHETIKKKKK.ViewModel
                     if (wnRole.ShowDialog() == true)
                     {
                         ListRole.Add(role);
+                        SaveChanges(ListRole);
                     }
                     SelectedRole = role;
-                }));
+                },
+                (obj) => true));
             }
         }
-
-        private RelayCommand editRole;
+        #region Command EditRole 
+        /// команда редактирования должности
+        private RelayCommand _editRole;
         public RelayCommand EditRole
         {
             get
             {
-                return editRole ??
-                (editRole = new RelayCommand(obj =>
+                return _editRole ??
+                (_editRole = new RelayCommand(obj =>
                 {
-                    WindowNewRole wnRole = new WindowNewRole { Title = "Редактирование должности", };
-                    Role role = SelectedRole;
-
-                    Role tempRole = new Role();
-                    tempRole = role.ShallowCopy();
-                    
-                    wnRole.DataContext = tempRole;
-                    if (wnRole.ShowDialog() == true)
+                    WindowNewRole wnRole = new WindowNewRole
                     {
+                        Title = "Редактирование должности",
+                    };
+                    Role role = SelectedRole;
+                    var tempRole = role.ShallowCopy();
+                    wnRole.DataContext = tempRole;
+                    if (wnRole.ShowDialog() == true) {
                         // сохранение данных в оперативной памяти
                         role.NameRole = tempRole.NameRole;
+                        SaveChanges(ListRole);
                     }
-                }, (obj) => SelectedRole != null && ListRole.Count > 0));
+                }, (obj) => SelectedRole != null && ListRole.Count >
+               0));
             }
         }
-
-        private RelayCommand deleteRole;
+        #endregion
+        #region DeleteRole
+        /// команда удаления должности
+        private RelayCommand _deleteRole;
         public RelayCommand DeleteRole
         {
             get
             {
-                return deleteRole ??
-                (deleteRole = new RelayCommand(obj =>
+                return _deleteRole ??
+                (_deleteRole = new RelayCommand(obj =>
                 {
                     Role role = SelectedRole;
                     MessageBoxResult result = MessageBox.Show("Удалить данные по должности: " + role.NameRole, "Предупреждение", MessageBoxButton.OKCancel, MessageBoxImage.Warning);
                     if (result == MessageBoxResult.OK)
                     {
                         ListRole.Remove(role);
+                        SaveChanges(ListRole);
                     }
                 }, (obj) => SelectedRole != null && ListRole.Count > 0));
             }
         }
-
-        public ObservableCollection<Role> LoadRole()
+        #endregion
+        #region Methods
+         public ObservableCollection<Role> LoadRole()
         {
             _jsonRoles = File.ReadAllText(path);
             if (_jsonRoles != null)
             {
-                ListRole = JsonConvert.DeserializeObject <ObservableCollection<Role>> (_jsonRoles);
+                ListRole = JsonConvert.DeserializeObject < ObservableCollection< Role >> (_jsonRoles);
                 return ListRole;
             }
             else
@@ -174,6 +165,10 @@ namespace PATHETIKKKKK.ViewModel
             }
         }
 
+        /// <summary>
+        /// Сохранение json-строки с данными по должностям в файл 
+        /// </summary>
+        /// <param name="listRole"></param>
         private void SaveChanges(ObservableCollection<Role> listRole)
         {
             var jsonRole = JsonConvert.SerializeObject(listRole);
@@ -186,9 +181,10 @@ namespace PATHETIKKKKK.ViewModel
             }
             catch (IOException e)
             {
-                Error = "Ошибка записи json файла \n" + e.Message;
+                Error = "Ошибка записи json файла /n" + e.Message;
             }
         }
+        #endregion
     }
 
 }

@@ -137,7 +137,7 @@ namespace PATHETIKKKKK.ViewModel
                     };
 
                     //wnPerson.CbRole.ItemsSource = new RoleViewModel().ListRole;
-                    // формирование кода нового собрудника
+                    // формирование кода нового сотрудника
                     int maxIdPerson = MaxId() + 1;
                     PersonDpo per = new PersonDpo
                     {
@@ -147,10 +147,13 @@ namespace PATHETIKKKKK.ViewModel
                     wnPerson.DataContext = per;
                     if (wnPerson.ShowDialog() == true)
                     {
+                        MessageBox.Show("AHAHAH!");
+                        
                         Role r = (Role)wnPerson.CbRole.SelectedValue;
                         per.RoleName = r.NameRole;
                         ListPersonDpo.Add(per);
-                        // добавление нового сотрудника в коллекцию ListPerson<Person> 
+                        // добавление нового сотрудника в коллекцию ListPerson<Person>
+
                         Person p = new Person();
                         p = p.CopyFromPersonDpo(per);
                         ListPerson.Add(p);

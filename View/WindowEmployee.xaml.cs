@@ -71,7 +71,7 @@ namespace PATHETIKKKKK.View
         //        Role r = (Role)wnEmployee.CbRole.SelectedValue;
         //        per.RoleName = r.NameRole;
         //        personsDpo.Add(per);
-        //        // добавление нового сотрудника в коллекцию ListPerson<Person> 
+        //        // добавление нового сотрудника в коллекцию ListPerson<Person> 
         //        Person p = new Person();
         //        p = p.CopyFromPersonDpo(per);
         //        vmPerson.ListPerson.Add(p);
@@ -103,7 +103,7 @@ namespace PATHETIKKKKK.View
         //            perDpo.Birthday = tempPerDpo.Birthday;
         //            lvEmployee.ItemsSource = null;
         //            lvEmployee.ItemsSource = personsDpo;
-        //        // перенос данных из класса отображения данных в класс Person
+        //        // перенос данных из класса отображения данных в класс Person
         //            FindPerson finder = new FindPerson(perDpo.Id);
         //            List<Person> listPerson = vmPerson.ListPerson.ToList();
         //            Person p = listPerson.Find(new Predicate<Person>(finder.PersonPredicate));
@@ -112,7 +112,7 @@ namespace PATHETIKKKKK.View
         //    }
         //    else
         //    {
-        //        MessageBox.Show("Необходимо выбрать сотрудника для редактированния",
+        //        MessageBox.Show("Необходимо выбрать сотрудника для редактированния",
         //        "Предупреждение", MessageBoxButton.OK, MessageBoxImage.Warning);
         //    }
 
