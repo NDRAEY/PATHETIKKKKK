@@ -103,7 +103,7 @@ namespace PATHETIKKKKK.ViewModel
                 return _addRole ??
                 (_addRole = new RelayCommand(obj =>
                 {
-                    Role newRole = new Role();
+                    Role newRole = new Role { Id = MaxId() + 1 };
                     WindowNewRole wnRole = new WindowNewRole
                     {
                         Title = "Новая должность",

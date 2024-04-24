@@ -10,6 +10,7 @@
         <Menu>
             <MenuItem x:Name="Employee" Header="Сотрудники" Click="Employee_Click"/>
             <MenuItem x:Name="Role" Header="Должности" Click="Role_Click"/>
+            <MenuItem x:Name="Exit" Header="Выйти" Click="Exit_Click"/>
         </Menu>
     </StackPanel>
 </Window>

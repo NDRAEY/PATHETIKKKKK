@@ -41,5 +41,10 @@ namespace PATHETIKKKKK
             WindowRole wRole = new WindowRole();
             wRole.Show();
         }
+
+        private void Exit_Click(object sender, RoutedEventArgs e)
+        {
+            System.Environment.Exit(0);
+        }
     }
 }

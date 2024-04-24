@@ -56,8 +56,6 @@ namespace PATHETIKKKKK.View
             Person v = (Person)s.SelectedItem;
 
             vmPerson.SelectedPerson = v;
-
-            MessageBox.Show("HAHA!");
         }
     }
 }

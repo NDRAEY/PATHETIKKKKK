@@ -1,7 +1,9 @@
 ﻿using PATHETIKKKKK.Model;
 using PATHETIKKKKK.ViewModel;
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Net.NetworkInformation;
 using System.Text;
@@ -22,34 +24,12 @@ namespace PATHETIKKKKK.View
     /// </summary>
     public partial class WindowRole : Window
     {
-        RoleViewModel vmRole;
-
         public WindowRole()
         {
             InitializeComponent();
+
             DataContext = new RoleViewModel();
         }
-
-        private void btnAdd_Click(object sender, RoutedEventArgs e)
-        {
-            WindowNewRole wnRole = new WindowNewRole
-            {
-                Title = "Новая должность",
-                Owner = this
-            };
-            
-            int maxIdRole = vmRole.MaxId() + 1;
-            Role role = new Role
-            {
-                Id = maxIdRole
-            };
-            wnRole.DataContext = role;
-            if (wnRole.ShowDialog() == true)
-            {
-                vmRole.ListRole.Add(role);
-            }
-        }
-
 
         private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {

@@ -14,8 +14,9 @@
         </StackPanel>
         
         <Label Margin="5" HorizontalAlignment="Center">Список должностей сотрудников</Label>
-        <ListView ItemsSource="{Binding ListRole}" Background="#FFD3CDCD" SelectionChanged="ListView_SelectionChanged">
-            <ListView.View >
+        <!--<ListView Background="#FFD3CDCD" SelectionChanged="ListView_SelectionChanged">-->
+        <ListView x:Name="lv" ItemsSource="{Binding ListRole}" Background="#FFD3CDCD" SelectionChanged="ListView_SelectionChanged">
+            <ListView.View>
                 <GridView>
                     <GridView.Columns>
                         <GridViewColumn Header="Код" Width="50" DisplayMemberBinding="{Binding Id}"/>
