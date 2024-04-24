@@ -12,7 +12,7 @@
             <Button Margin="10,10,5,10" Content="Редактировать" Height="25" Command="{Binding EditPerson}"/>
             <Button Content="Удалить" Height="25" Margin="10,10,5,10" Command="{Binding DeletePerson}"/>
         </StackPanel>
-        <ListView x:Name="lvEmployee" ItemsSource="{Binding ListPerson}">
+        <ListView x:Name="lvEmployee" ItemsSource="{Binding ListPerson}" SelectionChanged="lvEmployee_SelectionChanged">
             <ListView.View>
                 <GridView>
                     <GridView.Columns>

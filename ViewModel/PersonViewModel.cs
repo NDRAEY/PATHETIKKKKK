@@ -35,6 +35,7 @@ namespace PATHETIKKKKK.ViewModel
         /// <summary>
         /// коллекция данных по сотрудникам
         /// </summary>
+        public Person SelectedPerson;
         public ObservableCollection<Person> ListPerson { get; set; }
         //public ObservableCollection<PersonDpo> ListPersonDpo
         //{

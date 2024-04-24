@@ -27,8 +27,8 @@ namespace PATHETIKKKKK.View
         {
             InitializeComponent();
 
-            DataContext = new RoleViewModel();
-            //CbRole.ItemsSource = new RoleViewModel().ListRole;
+            //DataContext = new RoleViewModel();
+            CbRole.ItemsSource = new RoleViewModel().ListRole;
         }
 
         private void BtSave_Click(object sender, RoutedEventArgs e)

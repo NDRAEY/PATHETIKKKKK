@@ -18,14 +18,8 @@ namespace PATHETIKKKKK.ViewModel
 {
     public class RoleViewModel : INotifyPropertyChanged
     {
-        readonly string fld = System.Environment.GetEnvironmentVariable("USERPROFILE");
-        readonly string path;
-        
-        string _jsonRoles = String.Empty;
-
         public RoleViewModel()
         {
-            path = $@"{fld}\RoleData.json";
             ListRole = new ObservableCollection<Role>();
 
             // Загрузка данных по должностям сотрудников
@@ -217,41 +211,6 @@ namespace PATHETIKKKKK.ViewModel
                     }
                 }, (obj) => SelectedRole != null && ListRole.Count >
                0));
-            }
-        }
-        #endregion
-        #region Methods
-        public ObservableCollection<Role> LoadRole()
-        {
-            _jsonRoles = File.ReadAllText(path);
-            if (_jsonRoles != null)
-            {
-                ListRole = JsonConvert.DeserializeObject < ObservableCollection< Role >> (_jsonRoles);
-                return ListRole;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Сохранение json-строки с данными по должностям в файл 
-        /// </summary>
-        /// <param name="listRole"></param>
-        private void SaveChanges(ObservableCollection<Role> listRole)
-        {
-            var jsonRole = JsonConvert.SerializeObject(listRole);
-            try
-            {
-                using (StreamWriter writer = File.CreateText(path))
-                {
-                    writer.Write(jsonRole);
-                }
-            }
-            catch (IOException e)
-            {
-                Error = "Ошибка записи json файла /n" + e.Message;
             }
         }
         #endregion

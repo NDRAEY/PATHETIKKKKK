@@ -39,8 +39,6 @@ namespace PATHETIKKKKK.Model
         /// класс должности для связи с сущностью Role
         /// </summary>
         public virtual Role Role { get; set; }
-
-        
     }
 
 }

@@ -34,9 +34,9 @@ namespace PATHETIKKKKK.View
         {
             InitializeComponent();
 
-            //vmPerson = new PersonViewModel();
+            vmPerson = new PersonViewModel();
 
-            //DataContext = vmPerson;
+            DataContext = vmPerson;
             //vmRole = new RoleViewModel();
             //roles = vmRole.ListRole.ToList();
 
@@ -48,6 +48,16 @@ namespace PATHETIKKKKK.View
             //}
 
             //lvEmployee.ItemsSource = personsDpo;
+        }
+
+        private void lvEmployee_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ListView s = (ListView)sender;
+            Person v = (Person)s.SelectedItem;
+
+            vmPerson.SelectedPerson = v;
+
+            MessageBox.Show("HAHA!");
         }
     }
 }
