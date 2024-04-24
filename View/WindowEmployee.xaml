@@ -19,7 +19,7 @@
                         <GridViewColumn DisplayMemberBinding="{Binding Id}" Header="Код" Width="50" />
                         <GridViewColumn DisplayMemberBinding="{Binding LastName}" Header="Фамилия" />
                         <GridViewColumn DisplayMemberBinding="{Binding FirstName}" Header="Имя" />
-                        <GridViewColumn DisplayMemberBinding="{Binding RoleName}" Header="Должность" />
+                        <GridViewColumn Header="Должность" Width="100" DisplayMemberBinding="{Binding Role.NameRole, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                         <!--<GridViewColumn DisplayMemberBinding="{Binding Birthday, StringFormat={}{0:dd\.}{0:MM\.}{0:yyyy}}" Header="Дата рождения"/>-->
                         <GridViewColumn DisplayMemberBinding="{Binding Birthday}" Header="Дата рождения"/>
                     </GridView.Columns>

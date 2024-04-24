@@ -27,27 +27,27 @@ namespace PATHETIKKKKK.View
     {
         private PersonViewModel vmPerson;
         private RoleViewModel vmRole;
-        private ObservableCollection<PersonDpo> personsDpo;
+        //private ObservableCollection<PersonDpo> personsDpo;
         private List<Role> roles;
 
         public WindowEmployee()
         {
             InitializeComponent();
 
-            vmPerson = new PersonViewModel();
+            //vmPerson = new PersonViewModel();
 
-            DataContext = vmPerson;
-            vmRole = new RoleViewModel();
-            roles = vmRole.ListRole.ToList();
+            //DataContext = vmPerson;
+            //vmRole = new RoleViewModel();
+            //roles = vmRole.ListRole.ToList();
 
-            personsDpo = new ObservableCollection<PersonDpo>();
-            foreach (var person in vmPerson.ListPerson)
-            {
-                PersonDpo p = Person.CopyFromPerson(person);
-                personsDpo.Add(p);
-            }
+            //personsDpo = new ObservableCollection<PersonDpo>();
+            //foreach (var person in vmPerson.ListPerson)
+            //{
+            //    PersonDpo p = Person.CopyFromPerson(person);
+            //    personsDpo.Add(p);
+            //}
 
-            lvEmployee.ItemsSource = personsDpo;
+            //lvEmployee.ItemsSource = personsDpo;
         }
     }
 }

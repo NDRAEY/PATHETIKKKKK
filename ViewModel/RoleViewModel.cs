@@ -9,6 +9,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Runtime.Remoting.Contexts;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -21,11 +22,33 @@ namespace PATHETIKKKKK.ViewModel
         readonly string path;
         
         string _jsonRoles = String.Empty;
+
         public RoleViewModel()
         {
             path = $@"{fld}\RoleData.json";
-            ListRole = LoadRole();
+            ListRole = new ObservableCollection<Role>();
+
+            // Загрузка данных по должностям сотрудников
+            ListRole = GetRoles();
         }
+
+        private ObservableCollection<Role> GetRoles()
+        {
+            using (var context = new CompanyEntities())
+            {
+                var query = from role in context.Roles
+                            orderby role.NameRole
+                            select role;
+                if (query.Count() != 0)
+                {
+                    foreach (var c in query)
+                        ListRole.Add(c);
+                }
+            }
+            return ListRole;
+        }
+
+
         public string Error
         {
             get; set;
@@ -76,6 +99,8 @@ namespace PATHETIKKKKK.ViewModel
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
+        #region command AddRole
+        /// команда добавления новой должности
         private RelayCommand _addRole;
         public RelayCommand AddRole
         {
@@ -84,26 +109,37 @@ namespace PATHETIKKKKK.ViewModel
                 return _addRole ??
                 (_addRole = new RelayCommand(obj =>
                 {
+                    Role newRole = new Role();
                     WindowNewRole wnRole = new WindowNewRole
                     {
                         Title = "Новая должность",
+                        DataContext = newRole,
                     };
-                    // формирование кода новой должности
-                    int maxIdRole = MaxId() + 1;
-                    Role role = new Role { Id = maxIdRole };
-                    wnRole.DataContext = role;
-                    if (wnRole.ShowDialog() == true)
+                    wnRole.ShowDialog();
+                    if (wnRole.DialogResult == true)
                     {
-                        ListRole.Add(role);
-                        SaveChanges(ListRole);
+                        using (var context = new CompanyEntities())
+                        {
+                            try
+                            {
+                                context.Roles.Add(newRole);           
+                                context.SaveChanges();
+                                ListRole.Clear();
+                                ListRole = GetRoles();
+                            }
+                            catch (Exception ex)
+                            {
+                                MessageBox.Show("\nОшибка добавления данных!\n" + ex.Message, "Предупреждение");
+                            }
+                        }
                     }
-                    SelectedRole = role;
-                },
-                (obj) => true));
+                }, (obj) => true));
             }
         }
-        #region Command EditRole 
-        /// команда редактирования должности
+        #endregion
+
+        #region Command EditRole
+        /// команда добавления новой должности
         private RelayCommand _editRole;
         public RelayCommand EditRole
         {
@@ -112,25 +148,42 @@ namespace PATHETIKKKKK.ViewModel
                 return _editRole ??
                 (_editRole = new RelayCommand(obj =>
                 {
+                    Role editRole = SelectedRole;
                     WindowNewRole wnRole = new WindowNewRole
                     {
                         Title = "Редактирование должности",
+                        DataContext = editRole,
                     };
-                    Role role = SelectedRole;
-                    var tempRole = role.ShallowCopy();
-                    wnRole.DataContext = tempRole;
-                    if (wnRole.ShowDialog() == true) {
-                        // сохранение данных в оперативной памяти
-                        role.NameRole = tempRole.NameRole;
-                        SaveChanges(ListRole);
+                    wnRole.ShowDialog();
+                    if (wnRole.DialogResult == true)
+                    {
+                        using (var context = new CompanyEntities()) {
+                            Role role = context.Roles.Find(editRole.Id);
+                            if (role.NameRole != editRole.NameRole)
+                                role.NameRole = editRole.NameRole.Trim();
+                            try
+                            {
+                                context.SaveChanges();
+                                ListRole.Clear();
+                                ListRole = GetRoles();
+                            }
+                            catch (Exception ex)
+                            {
+                                MessageBox.Show("\nОшибка редактирования данных!\n" + ex.Message, "Предупреждение");
+                            }
+                        }
                     }
-                }, (obj) => SelectedRole != null && ListRole.Count >
-               0));
+                    else
+                    {
+                        ListRole.Clear();
+                        ListRole = GetRoles();
+                    }
+                }, (obj) => SelectedRole != null && ListRole.Count > 0));
             }
         }
         #endregion
         #region DeleteRole
-        /// команда удаления должности
+        /// команда добавления новой должности
         private RelayCommand _deleteRole;
         public RelayCommand DeleteRole
         {
@@ -140,18 +193,35 @@ namespace PATHETIKKKKK.ViewModel
                 (_deleteRole = new RelayCommand(obj =>
                 {
                     Role role = SelectedRole;
-                    MessageBoxResult result = MessageBox.Show("Удалить данные по должности: " + role.NameRole, "Предупреждение", MessageBoxButton.OKCancel, MessageBoxImage.Warning);
-                    if (result == MessageBoxResult.OK)
+                    using (var context = new CompanyEntities())
                     {
-                        ListRole.Remove(role);
-                        SaveChanges(ListRole);
+                        // Поиск в контексте удаляемого автомобиля
+                        Role delRole = context.Roles.Find(role.Id);
+                        if (delRole != null)
+                        {
+                            MessageBoxResult result = MessageBox.Show("Удалить данные по должности: " + delRole.NameRole, "Предупреждение", MessageBoxButton.OKCancel, MessageBoxImage.Warning);
+                            if (result == MessageBoxResult.OK)
+                            {
+                                try
+                                {
+                                    context.Roles.Remove(delRole);
+                                    context.SaveChanges();
+                                    ListRole.Remove(role);
+                                }
+                                catch (Exception ex)
+                                {
+                                    MessageBox.Show("\nОшибка удаления данных!\n" + ex.Message, "Предупреждение");
+                                }
+                            }
+                        }
                     }
-                }, (obj) => SelectedRole != null && ListRole.Count > 0));
+                }, (obj) => SelectedRole != null && ListRole.Count >
+               0));
             }
         }
         #endregion
         #region Methods
-         public ObservableCollection<Role> LoadRole()
+        public ObservableCollection<Role> LoadRole()
         {
             _jsonRoles = File.ReadAllText(path);
             if (_jsonRoles != null)
