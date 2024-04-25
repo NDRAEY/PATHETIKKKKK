@@ -26,9 +26,9 @@ namespace PATHETIKKKKK.View
     public partial class WindowEmployee : Window
     {
         private PersonViewModel vmPerson;
-        private RoleViewModel vmRole;
+        //private RoleViewModel vmRole;
         //private ObservableCollection<PersonDpo> personsDpo;
-        private List<Role> roles;
+        //private List<Role> roles;
 
         public WindowEmployee()
         {
